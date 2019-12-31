@@ -69,7 +69,7 @@ let sql = "SELECT * FROM XXIBM_PRODUCT_SKU";
 console.log(sql);
   let query = mysqlClient.query(sql, (err, results) => {
     if(err) throw err;
-    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+    res.send(JSON.stringify({"status": 200, "error": null, results}));
   });
 });
 
