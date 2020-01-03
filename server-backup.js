@@ -14,30 +14,12 @@ var mysql = require("mysql");
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
-
-var AWS = require('ibm-cos-sdk');
-var util = require('util');
-
-var config = {
-    endpoint: 'https://s3.us-south.cloud-object-storage.appdomain.cloud',
-    apiKeyId: '_bAzHuCAN1yPz4Rcg5CZY1Tbp0UOpshuMhpoNkIvJAa3',
-    serviceInstanceId: 'crn:v1:bluemix:public:iam-identity::a/693fe8ead49b44b192004113d21b15c2::serviceid:ServiceId-f6d85b01-d45a-4d92-831d-3e3efa44bb3c',
-};
-
-var cos = new AWS.S3(config);
-
-
 // we will use JSON
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 	
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
 
 // default route
 app.get('/', function (req, res) {
@@ -46,7 +28,8 @@ app.get('/', function (req, res) {
 
 
 //mysql configuration - Gamification project mysql connect details
-var mysqlHost = process.env.OPENSHIFT_MYSQL_DB_HOST || 'custom-mysql.gamification.svc.cluster.local';
+//var mysqlHost = process.env.OPENSHIFT_MYSQL_DB_HOST || 'custom-mysql.gamification.svc.cluster.local';
+var mysqlHost = '127.0.0.1';
 var mysqlPort = process.env.OPENSHIFT_MYSQL_DB_PORT || 3306;
 var mysqlUser = 'xxuser'; 
 var mysqlPass = 'welcome1';
@@ -82,8 +65,7 @@ let sql = "SELECT * FROM XXIBM_PRODUCT_SKU";
 console.log(sql);
   let query = mysqlClient.query(sql, (err, results) => {
     if(err) throw err;
-    //res.send(JSON.stringify({"status": 200, "error": null, "response":results}));
-    res.send(JSON.stringify({ "response":results}));
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
   });
 });
 
@@ -99,7 +81,7 @@ app.get('/api/getproducts/desc/:desc',(req, res) => {
 
 //GET A PRODUCT by PRODUCT_ID ... To retrieve all all products call this API ... URL/api/getproducts/'Product_id'
 app.get('/api/getproducts/id/:id',(req, res) => {
-  let sql = "select sku.item_number, sku.description, sku.long_description ,sku_attribute1,sku_attribute_value1, sku_attribute2,sku_attribute_value2,  price.list_price, discount from XXIBM_PRODUCT_CATALOGUE cat,XXIBM_PRODUCT_SKU sku, XXIBM_PRODUCT_PRICING price where cat.commodity=sku.catalogue_category and sku.item_number = price.item_number and price.item_number="+req.params.id;
+  let sql = "SELECT * FROM XXIBM_PRODUCT_SKU WHERE ITEM_NUMBER="+req.params.id;
   console.log(sql);
   let query = mysqlClient.query(sql, (err, results) => {
     if(err) throw err;
@@ -110,28 +92,6 @@ app.get('/api/getproducts/id/:id',(req, res) => {
 //GET PRODUCT PRICE by PRODUCT_ID ... To retrieve product price call this API ... URL/api/getproducts/price/'Product_id'
 app.get('/api/getproducts/price/:id',(req, res) => {
   let sql = "SELECT ITEM_NUMBER,LIST_PRICE FROM XXIBM_PRODUCT_PRICING WHERE ITEM_NUMBER="+req.params.id;
-  console.log(sql);
-  let query = mysqlClient.query(sql, (err, results) => {
-    if(err) throw err;
-    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
-  });
-});
-
-//Get All Categories
-
-app.get('/api/getallcategory',(req, res) => {
-let sql = "SELECT family_name FROM XXIBM_PRODUCT_CATALOGUE group by family_name";  
-console.log(sql);
-  let query = mysqlClient.query(sql, (err, results) => {
-    if(err) throw err;
-    //res.send(JSON.stringify({"status": 200, "error": null, "response":results}));
-    res.send(JSON.stringify({ "response":results}));
-  });
-});
-
-//GET A PRODUCT by CATEGORY... To retrieve all products call this API ... URL/api/getproductscat/'Description'
-app.get('/api/getproductscat/cat/:cat',(req, res) => {
-  let sql = "select sku.item_number, sku.description, sku.long_description ,sku_attribute1,sku_attribute_value1, sku_attribute2,sku_attribute_value2,  price.list_price, discount from XXIBM_PRODUCT_CATALOGUE cat,XXIBM_PRODUCT_SKU sku, XXIBM_PRODUCT_PRICING price where cat.commodity=sku.catalogue_category and sku.item_number = price.item_number and cat.family_name= '" + req.params.cat + "'";
   console.log(sql);
   let query = mysqlClient.query(sql, (err, results) => {
     if(err) throw err;
