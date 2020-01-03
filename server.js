@@ -15,16 +15,7 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
 
-var AWS = require('ibm-cos-sdk');
-var util = require('util');
 
-var config = {
-    endpoint: 'https://s3.us-south.cloud-object-storage.appdomain.cloud',
-    apiKeyId: '_bAzHuCAN1yPz4Rcg5CZY1Tbp0UOpshuMhpoNkIvJAa3',
-    serviceInstanceId: 'crn:v1:bluemix:public:iam-identity::a/693fe8ead49b44b192004113d21b15c2::serviceid:ServiceId-f6d85b01-d45a-4d92-831d-3e3efa44bb3c',
-};
-
-var cos = new AWS.S3(config);
 
 
 // we will use JSON
