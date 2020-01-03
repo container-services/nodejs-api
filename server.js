@@ -111,7 +111,7 @@ app.get('/api/getproducts/price/:id',(req, res) => {
 //Get All Categories
 
 app.get('/api/getallcategory',(req, res) => {
-let sql = "SELECT family_name FROM XXIBM_PRODUCT_CATALOGUE group by family_name";  
+let sql = "SELECT * FROM XXIBM_PRODUCT_STYLE";  
 console.log(sql);
   let query = mysqlClient.query(sql, (err, results) => {
     if(err) throw err;
@@ -122,7 +122,7 @@ console.log(sql);
 
 //GET A PRODUCT by CATEGORY... To retrieve all products call this API ... URL/api/getproductscat/'Description'
 app.get('/api/getproductscat/cat/:cat',(req, res) => {
-  let sql = "select sku.item_number, sku.description, sku.long_description ,sku_attribute1,sku_attribute_value1, sku_attribute2,sku_attribute_value2,  price.list_price, discount from XXIBM_PRODUCT_CATALOGUE cat,XXIBM_PRODUCT_SKU sku, XXIBM_PRODUCT_PRICING price where cat.commodity=sku.catalogue_category and sku.item_number = price.item_number and cat.family_name= '" + req.params.cat + "'";
+  let sql = "select sku.item_number, sku.description, sku.long_description ,sku_attribute1,sku_attribute_value1, sku_attribute2,sku_attribute_value2,  price.list_price, discount from XXIBM_PRODUCT_STYLE style, XXIBM_PRODUCT_SKU sku, XXIBM_PRODUCT_PRICING price where style.catalogue_category =sku.catalogue_category and sku.item_number = price.item_number and style.CATALOGUE_CATEGORY = " + req.params.cat;
   console.log(sql);
   let query = mysqlClient.query(sql, (err, results) => {
     if(err) throw err;
