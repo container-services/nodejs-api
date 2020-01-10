@@ -130,6 +130,17 @@ app.get('/api/getproductscat/cat/:cat',(req, res) => {
   });
 });
 
+
+//GET A PRODUCT by PRODUCT_ID ... To retrieve all all products call this API ... URL/api/getproducts/'Product_id'
+app.get('/api/getproducts/search/:searchtext',(req, res) => {
+  let sql = "select sku.item_number, sku.description, sku.long_description ,sku_attribute1,sku_attribute_value1, sku_attribute2,sku_attribute_value2,  price.list_price, discount from XXIBM_PRODUCT_CATALOGUE cat,XXIBM_PRODUCT_SKU sku, XXIBM_PRODUCT_PRICING price where cat.commodity=sku.catalogue_category and sku.item_number = price.item_number and sku.description LIKE '%" + req.params.searchtext + "%'";
+  console.log(sql);
+  let query = mysqlClient.query(sql, (err, results) => {
+    if(err) throw err;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+});
+
 // set port
 app.listen(port, ip);
 
