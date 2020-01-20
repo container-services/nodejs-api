@@ -141,6 +141,16 @@ app.get('/api/getproducts/search/:searchtext',(req, res) => {
   });
 });
 
+//rest api to create a new customer record into mysql database
+app.post('/api/adduser', function (req, res) {
+   var params  = req.body;
+   console.log(params);
+   connection.query('INSERT INTO auth_user SET ?', params, function (error, results, fields) {
+	  if (error) throw error;
+	  res.end(JSON.stringify(results));
+	});
+});
+
 // set port
 app.listen(port, ip);
 
