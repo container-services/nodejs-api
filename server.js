@@ -151,6 +151,17 @@ app.post('/api/adduser', function (req, res) {
 	});
 });
 
+
+//GET A PRODUCT by CATEGORY... To retrieve all products call this API ... URL/api/getproductscat/'Description'
+app.get('/api/getproductsbrand/brand/:brand',(req, res) => {
+  let sql = "select sku.item_number, sku.description, sku.long_description ,sku_attribute1,sku_attribute_value1, sku_attribute2,sku_attribute_value2,  price.list_price, discount from XXIBM_PRODUCT_STYLE style, XXIBM_PRODUCT_SKU sku, XXIBM_PRODUCT_PRICING price where style.catalogue_category =sku.catalogue_category and sku.item_number = price.item_number and style.brand = "+req.params.brand;
+  console.log(sql);
+  let query = mysqlClient.query(sql, (err, results) => {
+    if(err) throw err;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+});
+
 // set port
 app.listen(port, ip);
 
